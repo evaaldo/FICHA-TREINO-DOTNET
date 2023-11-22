@@ -45,6 +45,20 @@ namespace ControleExercicios.Controller
             return treino;
         }
 
+        [HttpPost]
+        public async Task<ActionResult<Treino>> PostTreino(Guid id, Treino treino)
+        {
+            if(_context.Treinos == null)
+            {
+                return Problem("Os treinos estão vazios!");;
+            }
+
+            _context.Treinos.Add(treino);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetTreino", new { id = treino.ID }, treino);
+        }
+
         private bool TreinoExists(Guid id)
         {
             return(_context.Treinos?.Any(treino => treino.ID == id)).GetValueOrDefault();
