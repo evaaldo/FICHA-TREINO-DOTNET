@@ -2,6 +2,7 @@ using ControleExercicios.Context;
 using Microsoft.AspNetCore.Mvc;
 using ControleExercicios.Model;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace ControleExercicios.Controller
 {
@@ -57,6 +58,35 @@ namespace ControleExercicios.Controller
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetTreino", new { id = treino.ID }, treino);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTreino(Guid id, Treino treino)
+        {
+            if(id != treino.ID)
+            {
+                return BadRequest();
+            }
+
+            _context.Treinos.Entry(treino).State = EntityState.Modified;
+            
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DBConcurrencyException)
+            {
+                if(!TreinoExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         private bool TreinoExists(Guid id)
