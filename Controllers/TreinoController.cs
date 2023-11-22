@@ -27,6 +27,24 @@ namespace ControleExercicios.Controller
             return await _context.Treinos.ToListAsync();
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Treino>> GetTreino(Guid id)
+        {
+            if(_context.Treinos == null)
+            {
+                return NotFound();
+            }
+
+            var treino = await _context.Treinos.FindAsync(id);
+
+            if(treino == null)
+            {
+                return NotFound();
+            }
+
+            return treino;
+        }
+
         private bool TreinoExists(Guid id)
         {
             return(_context.Treinos?.Any(treino => treino.ID == id)).GetValueOrDefault();
