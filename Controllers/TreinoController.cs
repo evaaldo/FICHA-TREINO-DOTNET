@@ -89,6 +89,27 @@ namespace ControleExercicios.Controller
             return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTreino(Guid id)
+        {   
+            if(_context.Treinos == null)
+            {
+                return NotFound();
+            }
+
+            var treino = await _context.Treinos.FindAsync(id);
+
+            if(treino == null)
+            {
+                return NotFound();
+            }
+
+            _context.Treinos.Remove(treino);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         private bool TreinoExists(Guid id)
         {
             return(_context.Treinos?.Any(treino => treino.ID == id)).GetValueOrDefault();
